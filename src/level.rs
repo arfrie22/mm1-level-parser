@@ -78,9 +78,9 @@ pub enum AutoScroll {
 // 6F 	u8 	Unknown
 // 70 	u16 	Time limit
 // 72 	u8 	Autoscroll (0 = none, 1 = slow, 2 = medium, 3 = fast)
-// 73 	u8 	Unknown
-// 74 	u32 	Unknown
-// 78 	u8[0x60] 	Unknown
+// 73 	u8 	Flags
+// 74 	u32 	Width
+// 78 	u8[0x60] 	Mii data
 // D8 	u32 	Unknown
 // DC 	u32 	Unknown
 // E0 	padding 	0xC unused bytes
@@ -91,15 +91,18 @@ pub enum AutoScroll {
 
 #[derive(Debug)]
 pub struct Level {
-    version: u64,
-    creation_time: chrono::NaiveDateTime,
-    level_name: String,
-    game_mode: GameMode,
-    course_theme: CourseTheme,
-    time_limit: u16,
-    auto_scroll: AutoScroll,
-    objects: Vec<Object>,
-    sound_effects: Vec<SoundEffect>,
+    pub version: u64,
+    pub creation_time: chrono::NaiveDateTime,
+    pub level_name: String,
+    pub game_mode: GameMode,
+    pub course_theme: CourseTheme,
+    pub time_limit: u16,
+    pub auto_scroll: AutoScroll,
+    pub flags: u8,
+    pub width: u32,
+    pub mii_data: [u8; 0x60],
+    pub objects: Vec<Object>,
+    pub sound_effects: Vec<SoundEffect>,
 }
 
 impl PackedStruct for Level {
@@ -198,9 +201,18 @@ impl PackedStruct for Level {
             .write_all(&[self.auto_scroll as u8])
             .map_err(|_| packed_struct::PackingError::InternalError)?;
 
-        // 73 	u8 	Unknown
-        // 74 	u32 	Unknown
-        // 78 	u8[0x60] 	Unknown
+        // 73 	u8 	Flags
+        cursor
+            .write_all(&[self.flags])
+            .map_err(|_| packed_struct::PackingError::InternalError)?;
+        // 74 	u32 	    Width
+        cursor
+            .write_all(&self.width.to_be_bytes())
+            .map_err(|_| packed_struct::PackingError::InternalError)?;
+        // 78 	u8[0x60] 	    Mii data
+        cursor
+            .write_all(&self.mii_data)
+            .map_err(|_| packed_struct::PackingError::InternalError)?;
         // D8 	u32 	Unknown
         // DC 	u32 	Unknown
         // E0 	padding 	0xC unused bytes
@@ -330,9 +342,18 @@ impl PackedStruct for Level {
         // 72 	u8 	Autoscroll (0 = none, 1 = slow, 2 = medium, 3 = fast)
         let auto_scroll = AutoScroll::try_from_primitive(src[0x72]).map_err(|_| packed_struct::PackingError::InvalidValue)?;
 
-        // 73 	u8 	Unknown
-        // 74 	u32 	Unknown
-        // 78 	u8[0x60] 	Unknown
+        // 73 	u8 	Flags
+        let flags = src[0x73];
+        // 74 	u32 	    Width
+        let width = u32::from_be_bytes(
+            src[0x74..0x78]
+                .try_into()
+                .map_err(|_| packed_struct::PackingError::InvalidValue)?,
+        );
+        // 78 	u8[0x60] 	    Mii data
+        let mut mii_data = [0; 0x60];
+        mii_data.copy_from_slice(&src[0x78..0xD8]);
+
         // D8 	u32 	Unknown
         // DC 	u32 	Unknown
         // E0 	padding 	0xC unused bytes
@@ -377,6 +398,9 @@ impl PackedStruct for Level {
             course_theme,
             time_limit,
             auto_scroll,
+            flags,
+            width,
+            mii_data,
             objects,
             sound_effects,
         })
@@ -392,6 +416,9 @@ impl Level {
         course_theme: CourseTheme,
         time_limit: u16,
         auto_scroll: AutoScroll,
+        flags: u8,
+        width: u32,
+        mii_data: [u8; 0x60],
         objects: Vec<Object>,
         sound_effects: Vec<SoundEffect>,
     ) -> Self {
@@ -403,6 +430,9 @@ impl Level {
             course_theme,
             time_limit,
             auto_scroll,
+            flags,
+            width,
+            mii_data,
             objects,
             sound_effects,
         }
@@ -419,5 +449,15 @@ impl Level {
     pub fn to_bytes(&self) -> Result<Vec<u8>, Error> {
         let packed = self.pack().map_err(|_| Error::InvalidData)?;
         Ok(packed.to_vec())
+    }
+
+    // Width in file / 16, in range of [0, 240]
+    pub fn block_width(&self) -> u32 {
+        self.width / 16
+    }
+
+    // Always 27 in Mario Maker 1
+    pub fn block_height(&self) -> u32 {
+        27
     }
 }

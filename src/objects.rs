@@ -15,35 +15,71 @@ use packed_struct::prelude::*;
 // 1E 	s8 	Unknown (Always -1 in sample courses - could be object's transformation ID?)
 // 1F 	s8 	Child object's transformation ID (used by EditKinokoFunny)
 #[derive(Debug, PackedStruct)]
-#[packed_struct(bit_numbering="msb0", endian="msb")]
+#[packed_struct(bit_numbering = "msb0", endian = "msb")]
 pub struct Object {
-    #[packed_field(bytes="0x00..=0x03")]
-    x_position: u32,
-    #[packed_field(bytes="0x04..=0x07")]
-    z_position: u32,
-    #[packed_field(bytes="0x08..=0x09")]
-    y_position: i16,   
-    #[packed_field(bytes="0x0A")]
-    width: i8,
-    #[packed_field(bytes="0x0B")]
-    height: i8,
-    #[packed_field(bytes="0x0C..=0x0F")]
-    object_flags: u32,
-    #[packed_field(bytes="0x10..=0x13")]
-    child_object_flags: u32,
-    #[packed_field(bytes="0x14..=0x17")]
-    extended_object_data: u32,
-    #[packed_field(bytes="0x18")]
-    object_type: i8,
-    #[packed_field(bytes="0x19")]
-    child_object_type: i8,
-    #[packed_field(bytes="0x1A..=0x1B")]
-    link_id: i16,
-    #[packed_field(bytes="0x1C..=0x1D")]
-    effect_index: i16,
+    #[packed_field(bytes = "0x00..=0x03")]
+    pub x_position: u32,
+    #[packed_field(bytes = "0x04..=0x07")]
+    pub z_position: u32,
+    #[packed_field(bytes = "0x08..=0x09")]
+    pub y_position: i16,
+    #[packed_field(bytes = "0x0A")]
+    pub width: i8,
+    #[packed_field(bytes = "0x0B")]
+    pub height: i8,
+    #[packed_field(bytes = "0x0C..=0x0F")]
+    pub object_flags: u32,
+    #[packed_field(bytes = "0x10..=0x13")]
+    pub child_object_flags: u32,
+    #[packed_field(bytes = "0x14..=0x17")]
+    pub extended_object_data: u32,
+    #[packed_field(bytes = "0x18")]
+    pub object_type: i8,
+    #[packed_field(bytes = "0x19")]
+    pub child_object_type: i8,
+    #[packed_field(bytes = "0x1A..=0x1B")]
+    pub link_id: i16,
+    #[packed_field(bytes = "0x1C..=0x1D")]
+    pub effect_index: i16,
     // Could be incorrect
-    #[packed_field(bytes="0x1E")]
-    transformation_id: i8,
-    #[packed_field(bytes="0x1F")]
-    child_object_transformation_id: i8,
+    #[packed_field(bytes = "0x1E")]
+    pub transformation_id: i8,
+    #[packed_field(bytes = "0x1F")]
+    pub child_object_transformation_id: i8,
+}
+
+impl Object {
+    pub fn new(
+        x_position: u32,
+        z_position: u32,
+        y_position: i16,
+        width: i8,
+        height: i8,
+        object_flags: u32,
+        child_object_flags: u32,
+        extended_object_data: u32,
+        object_type: i8,
+        child_object_type: i8,
+        link_id: i16,
+        effect_index: i16,
+        transformation_id: i8,
+        child_object_transformation_id: i8,
+    ) -> Object {
+        Object {
+            x_position,
+            z_position,
+            y_position,
+            width,
+            height,
+            object_flags,
+            child_object_flags,
+            extended_object_data,
+            object_type,
+            child_object_type,
+            link_id,
+            effect_index,
+            transformation_id,
+            child_object_transformation_id,
+        }
+    }
 }

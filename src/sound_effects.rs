@@ -1,6 +1,6 @@
 use packed_struct::prelude::*;
 
-#[derive(Debug, PackedStruct)]
+#[derive(Debug, PackedStruct, Clone, PartialEq, Eq)]
 #[packed_struct(bit_numbering="msb0", endian="msb", size_bytes="8")]
 pub struct SoundEffect {
     // pub sound_type: u8,

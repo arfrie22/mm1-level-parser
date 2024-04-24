@@ -14,7 +14,7 @@ use packed_struct::prelude::*;
 // 1C 	s16 	Effect Index (-1 if none)
 // 1E 	s8 	Unknown (Always -1 in sample courses - could be object's transformation ID?)
 // 1F 	s8 	Child object's transformation ID (used by EditKinokoFunny)
-#[derive(Debug, PackedStruct)]
+#[derive(Debug, PackedStruct, Clone, PartialEq, Eq)]
 #[packed_struct(bit_numbering = "msb0", endian = "msb")]
 pub struct Object {
     #[packed_field(bytes = "0x00..=0x03")]

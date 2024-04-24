@@ -1,7 +1,7 @@
 use std::io::Read;
 use crate::{level::Level, thumbnail::Thumbnail, Error};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CourseData {
     CourseData,
     CourseDataSub,
@@ -9,7 +9,7 @@ pub enum CourseData {
     Thumbnail1,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Course {
     pub level: Level,
     pub sub_level: Level,

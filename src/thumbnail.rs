@@ -2,7 +2,7 @@ use crc32fast::Hasher;
 
 use crate::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Thumbnail {
     pub jpeg_data: Vec<u8>,
 }

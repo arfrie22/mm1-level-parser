@@ -89,7 +89,7 @@ pub enum AutoScroll {
 // 145F0 	effect_t[300] 	Sound effects
 // 14F50 	padding 	0xB0 unused bytes
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Level {
     pub version: u64,
     pub creation_time: chrono::NaiveDateTime,

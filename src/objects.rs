@@ -82,4 +82,16 @@ impl Object {
             child_object_transformation_id,
         }
     }
+
+    pub fn get_x_block(&self) -> u32 {
+        self.x_position / 10
+    }
+
+    pub fn get_z_block(&self) -> u32 {
+        self.z_position / 10
+    }
+
+    pub fn get_y_block(&self) -> i16 {
+        self.y_position / 10
+    }
 }

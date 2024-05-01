@@ -6,8 +6,10 @@ use packed_struct::prelude::*;
 
 use crate::{objects::Object, sound_effects::SoundEffect, Error};
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, IntoPrimitive, TryFromPrimitive, Default)]
+#[repr(u8)]
 pub enum GameMode {
+    #[default]
     SuperMarioBros,
     Mario3,
     MarioWorld,
@@ -37,9 +39,10 @@ impl PackedStruct for GameMode {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, IntoPrimitive, TryFromPrimitive)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, IntoPrimitive, TryFromPrimitive, Default)]
 #[repr(u8)]
 pub enum CourseTheme {
+    #[default]
     Overworld = 0,
     Underground = 1,
     Castle = 2,
@@ -48,9 +51,10 @@ pub enum CourseTheme {
     GhostHouse = 5,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, IntoPrimitive, TryFromPrimitive)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, IntoPrimitive, TryFromPrimitive, Default)]
 #[repr(u8)]
 pub enum AutoScroll {
+    #[default]
     None = 0,
     Slow = 1,
     Medium = 2,
